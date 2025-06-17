@@ -3,7 +3,9 @@ name = "file-handler"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "tabulate>=0.9.0",
+]
 
 [dependency-groups]
 dev = [

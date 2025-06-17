@@ -1,4 +1,6 @@
 from typing import List, Dict, Any, Optional
+import csv
+from tabulate import tabulate
 
 
 class CsvLoader:
@@ -8,8 +10,10 @@ class CsvLoader:
         self.file_path = file_path
 
     def load(self) -> List[Dict[str, Any]]:
-        """Заглушка: возвращает список строк из CSV."""
-        pass
+        """Читает CSV-файл и возвращает список словарей."""
+        with open(self.file_path, encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            return [dict(row) for row in reader]
 
 
 class Filter:
@@ -46,8 +50,10 @@ class OrderBy:
 
 
 class TablePrinter:
-    """Печатает таблицу в консоль."""
+    """Печатает таблицу в консоль с помощью tabulate."""
 
     def print(self, rows: List[Dict[str, Any]]) -> None:
-        """Заглушка: выводит таблицу."""
-        pass
+        if not rows:
+            print("Нет данных для отображения.")
+            return
+        print(tabulate(rows, headers="keys", tablefmt="grid", showindex=False))
