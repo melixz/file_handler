@@ -1,6 +1,7 @@
 from core import CsvLoader, Filter, Aggregator, OrderBy, TablePrinter
 import tempfile
 import os
+import pytest
 
 
 def test_csv_loader_init():
@@ -27,6 +28,57 @@ def test_csv_loader_load():
 def test_filter_init():
     f = Filter("col>5")
     assert f.condition == "col>5"
+
+
+def test_filter_numeric_gt():
+    rows = [
+        {"price": "10"},
+        {"price": "20"},
+        {"price": "5"},
+    ]
+    filtered = Filter("price>10").apply(rows)
+    assert filtered == [{"price": "20"}]
+
+
+def test_filter_numeric_lt():
+    rows = [
+        {"price": "10"},
+        {"price": "20"},
+        {"price": "5"},
+    ]
+    filtered = Filter("price<10").apply(rows)
+    assert filtered == [{"price": "5"}]
+
+
+def test_filter_numeric_eq():
+    rows = [
+        {"price": "10"},
+        {"price": "20"},
+        {"price": "5"},
+    ]
+    filtered = Filter("price=10").apply(rows)
+    assert filtered == [{"price": "10"}]
+
+
+def test_filter_string_eq():
+    rows = [
+        {"brand": "apple"},
+        {"brand": "samsung"},
+        {"brand": "xiaomi"},
+    ]
+    filtered = Filter("brand=apple").apply(rows)
+    assert filtered == [{"brand": "apple"}]
+
+
+def test_filter_nonexistent_column():
+    rows = [{"a": "1"}]
+    filtered = Filter("b=1").apply(rows)
+    assert filtered == []
+
+
+def test_filter_invalid_condition():
+    with pytest.raises(ValueError):
+        Filter("price!=10")
 
 
 def test_aggregator_init():
