@@ -119,14 +119,37 @@ class Aggregator:
 
 
 class OrderBy:
-    """Сортирует данные по колонке."""
+    """Сортирует данные по колонке. Формат: <column>=asc|desc"""
 
     def __init__(self, order: Optional[str] = None) -> None:
         self.order = order
+        self.column = None
+        self.reverse = False
+        if order:
+            self._parse_order(order)
+
+    def _parse_order(self, order: str) -> None:
+        if "=" not in order:
+            raise ValueError("Формат сортировки: <column>=asc|desc")
+        col, direction = order.split("=", 1)
+        col = col.strip()
+        direction = direction.strip().lower()
+        if direction not in ("asc", "desc"):
+            raise ValueError("Сортировка поддерживает только asc или desc")
+        self.column = col
+        self.reverse = direction == "desc"
 
     def apply(self, rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Заглушка: сортирует строки по колонке."""
-        pass
+        if not self.order:
+            return rows
+        if self.column is None:
+            raise ValueError("Сортировка не инициализирована")
+        try:
+            return sorted(
+                rows, key=lambda r: r.get(self.column, ""), reverse=self.reverse
+            )
+        except Exception as e:
+            raise ValueError(f"Ошибка сортировки: {e}")
 
 
 class TablePrinter:

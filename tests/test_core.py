@@ -164,3 +164,53 @@ def test_aggregator_unknown_op():
     rows = [{"price": "10"}]
     with pytest.raises(ValueError):
         Aggregator("sum").apply(rows, "price")
+
+
+def test_order_by_numeric_asc():
+    rows = [
+        {"price": "20"},
+        {"price": "10"},
+        {"price": "30"},
+    ]
+    sorted_rows = OrderBy("price=asc").apply(rows)
+    assert [r["price"] for r in sorted_rows] == ["10", "20", "30"]
+
+
+def test_order_by_numeric_desc():
+    rows = [
+        {"price": "20"},
+        {"price": "10"},
+        {"price": "30"},
+    ]
+    sorted_rows = OrderBy("price=desc").apply(rows)
+    assert [r["price"] for r in sorted_rows] == ["30", "20", "10"]
+
+
+def test_order_by_string_asc():
+    rows = [
+        {"brand": "xiaomi"},
+        {"brand": "apple"},
+        {"brand": "samsung"},
+    ]
+    sorted_rows = OrderBy("brand=asc").apply(rows)
+    assert [r["brand"] for r in sorted_rows] == ["apple", "samsung", "xiaomi"]
+
+
+def test_order_by_string_desc():
+    rows = [
+        {"brand": "xiaomi"},
+        {"brand": "apple"},
+        {"brand": "samsung"},
+    ]
+    sorted_rows = OrderBy("brand=desc").apply(rows)
+    assert [r["brand"] for r in sorted_rows] == ["xiaomi", "samsung", "apple"]
+
+
+def test_order_by_invalid_format():
+    with pytest.raises(ValueError):
+        OrderBy("price").apply([])
+
+
+def test_order_by_invalid_direction():
+    with pytest.raises(ValueError):
+        OrderBy("price=up").apply([])

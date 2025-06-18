@@ -3,7 +3,7 @@
 
 import argparse
 import sys
-from core import CsvLoader, TablePrinter, Filter, Aggregator
+from core import CsvLoader, TablePrinter, Filter, Aggregator, OrderBy
 
 
 def main() -> None:
@@ -20,6 +20,11 @@ def main() -> None:
         required=False,
         help="Агрегация: <операция>:<колонка>, например avg:price",
     )
+    parser.add_argument(
+        "--order-by",
+        required=False,
+        help="Сортировка: <column>=asc|desc, например price=desc",
+    )
     args = parser.parse_args()
 
     try:
@@ -30,6 +35,12 @@ def main() -> None:
                 rows = Filter(args.where).apply(rows)
             except Exception as e:
                 print(f"Ошибка фильтрации: {e}", file=sys.stderr)
+                sys.exit(1)
+        if args.order_by:
+            try:
+                rows = OrderBy(args.order_by).apply(rows)
+            except Exception as e:
+                print(f"Ошибка сортировки: {e}", file=sys.stderr)
                 sys.exit(1)
         if args.aggregate:
             try:
