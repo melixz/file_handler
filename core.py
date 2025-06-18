@@ -86,12 +86,36 @@ class Filter:
 class Aggregator:
     """Выполняет агрегацию по числовой колонке."""
 
+    SUPPORTED = {
+        "avg": lambda values: sum(values) / len(values) if values else None,
+        "min": min,
+        "max": max,
+    }
+
     def __init__(self, operation: Optional[str] = None) -> None:
         self.operation = operation
 
     def apply(self, rows: List[Dict[str, Any]], column: str) -> Any:
-        """Заглушка: агрегирует значения колонки."""
-        pass
+        if not self.operation or self.operation not in self.SUPPORTED:
+            raise ValueError(f"Неизвестная операция агрегации: {self.operation}")
+        values = []
+        for row in rows:
+            val = row.get(column)
+            if val is None:
+                continue
+            try:
+                num = float(val)
+            except (ValueError, TypeError):
+                raise ValueError(
+                    f"Колонка '{column}' содержит нечисловое значение: {val}"
+                )
+            values.append(num)
+        if not values:
+            raise ValueError(
+                f"Нет числовых значений для агрегации по колонке '{column}'"
+            )
+        result = self.SUPPORTED[self.operation](values)
+        return result
 
 
 class OrderBy:

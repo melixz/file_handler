@@ -113,3 +113,54 @@ def test_table_printer_print_empty(capsys):
     printer.print([])
     out = capsys.readouterr().out
     assert "Нет данных" in out
+
+
+def test_aggregator_avg():
+    rows = [
+        {"price": "10"},
+        {"price": "20"},
+        {"price": "30"},
+    ]
+    result = Aggregator("avg").apply(rows, "price")
+    assert result == 20
+
+
+def test_aggregator_min():
+    rows = [
+        {"price": "10"},
+        {"price": "20"},
+        {"price": "30"},
+    ]
+    result = Aggregator("min").apply(rows, "price")
+    assert result == 10
+
+
+def test_aggregator_max():
+    rows = [
+        {"price": "10"},
+        {"price": "20"},
+        {"price": "30"},
+    ]
+    result = Aggregator("max").apply(rows, "price")
+    assert result == 30
+
+
+def test_aggregator_non_numeric():
+    rows = [
+        {"price": "10"},
+        {"price": "abc"},
+    ]
+    with pytest.raises(ValueError):
+        Aggregator("avg").apply(rows, "price")
+
+
+def test_aggregator_empty():
+    rows = []
+    with pytest.raises(ValueError):
+        Aggregator("avg").apply(rows, "price")
+
+
+def test_aggregator_unknown_op():
+    rows = [{"price": "10"}]
+    with pytest.raises(ValueError):
+        Aggregator("sum").apply(rows, "price")
