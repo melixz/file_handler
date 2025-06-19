@@ -39,46 +39,47 @@ uv sync
 
 ### Базовый запуск
 ```bash
-python main.py --file data.csv
+python main.py --file products.csv
 ```
+![img.png](img.png)
 
 ### Фильтрация
 ```bash
 # Фильтрация по числовой колонке
-python main.py --file data.csv --where "price>100"
+python main.py --file products.csv --where "price>100"
 
 # Фильтрация по строковой колонке
-python main.py --file data.csv --where "brand=apple"
+python main.py --file products.csv --where "brand=apple"
 ```
 
 ### Агрегация
 ```bash
 # Среднее значение
-python main.py --file data.csv --aggregate "avg:price"
+python main.py --file products.csv --aggregate "avg:price"
 
 # Минимальное значение
-python main.py --file data.csv --aggregate "min:price"
+python main.py --file products.csv --aggregate "min:price"
 
 # Максимальное значение
-python main.py --file data.csv --aggregate "max:price"
+python main.py --file products.csv --aggregate "max:price"
 ```
 
 ### Сортировка
 ```bash
 # По возрастанию
-python main.py --file data.csv --order-by "price=asc"
+python main.py --file products.csv --order-by "price=asc"
 
 # По убыванию
-python main.py --file data.csv --order-by "brand=desc"
+python main.py --file products.csv --order-by "brand=desc"
 ```
 
 ### Комбинирование операций
 ```bash
 # Фильтрация + сортировка
-python main.py --file data.csv --where "price>100" --order-by "price=desc"
+python main.py --file products.csv --where "price>100" --order-by "price=desc"
 
 # Фильтрация + агрегация
-python main.py --file data.csv --where "brand=apple" --aggregate "avg:price"
+python main.py --file products.csv --where "brand=apple" --aggregate "avg:price"
 ```
 
 ## Пример файла CSV
